@@ -1,7 +1,7 @@
 mod business;
 mod reviews;
 use tokio;
-use actix_web::{get, web, App, HttpServer, Responder, HttpResponse};
+use actix_web::{get, web, App, HttpServer, Responder, HttpResponse, dev::Server};
 
 struct AppState{
     app_name: String,
@@ -10,20 +10,28 @@ struct AppState{
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
+    
+    // let server = create_server()?;
+    // let handle = server.handle(); // We have this to be able to make a tokio task later for multi connection processing. 
+    create_server()?.await?;
+    Ok(())
+}
+
+fn create_server()-> std::io::Result<Server>{
     let server_data = web::Data::new(AppState{
-        app_name: "Actix-web".into(),
+        app_name: "Rudy's site!".into(),
     });
 
     let app = move || {
         App::new()
             .app_data(server_data.clone())
             .service(get_business)
+            .service(index)
     };
     
-    HttpServer::new(app)
+    Ok(HttpServer::new(app)
         .bind(("127.0.0.1", 33333))?
-        .run()
-        .await
+        .run())
 }
 
 
