@@ -1,5 +1,5 @@
-use std::sync::Arc;
-
+mod business;
+mod reviews;
 use tokio;
 use actix_web::{get, web, App, HttpServer, Responder, HttpResponse};
 
@@ -17,7 +17,7 @@ async fn main() -> std::io::Result<()> {
     let app = move || {
         App::new()
             .app_data(server_data.clone())
-            .service(get_buisiness)
+            .service(get_business)
     };
     
     HttpServer::new(app)
@@ -28,7 +28,7 @@ async fn main() -> std::io::Result<()> {
 
 
 #[get("buisiness")]
-async fn get_buisiness() -> impl Responder{
+async fn get_business() -> impl Responder{
     HttpResponse::Ok().body("Here's a buisiness endpoint.")
 }
 
