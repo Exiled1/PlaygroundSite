@@ -1,3 +1,6 @@
+use serde::Deserialize;
+
+#[derive(Deserialize)]
 pub struct Business{
     pub name: String,
     pub street_addr: String,
@@ -9,6 +12,8 @@ pub struct Business{
     pub email: Option<String>,
     pub website: Option<String>,
 }
+
+#[derive(Deserialize)]
 
 pub struct Category {
     pub main_category: String,

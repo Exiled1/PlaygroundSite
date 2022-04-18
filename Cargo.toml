@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4.0.1"
-serde = "1.0.136"
+serde = {version = "1.0.136", features = ["derive"]}
 tokio = {version = "1.17.0", features =["full"]}

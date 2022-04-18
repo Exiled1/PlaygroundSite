@@ -1,3 +1,4 @@
+#![allow(non_snake_case)]
 mod business;
 mod reviews;
 use tokio;
@@ -9,17 +10,14 @@ struct AppState{
 
 
 #[tokio::main]
-async fn main() -> std::io::Result<()> {
-    
-    // let server = create_server()?;
-    // let handle = server.handle(); // We have this to be able to make a tokio task later for multi connection processing. 
+async fn main() -> std::io::Result<()> {    
     create_server()?.await?;
     Ok(())
 }
 
 fn create_server()-> std::io::Result<Server>{
     let server_data = web::Data::new(AppState{
-        app_name: "Rudy's site!".into(),
+        app_name: "Belp".into(),
     });
 
     let app = move || {
@@ -35,10 +33,17 @@ fn create_server()-> std::io::Result<Server>{
 }
 
 
-#[get("buisiness")]
+#[get("business")]
 async fn get_business() -> impl Responder{
     HttpResponse::Ok().body("Here's a buisiness endpoint.")
 }
+
+#[get("business/{id}")]
+async fn set_business(_id: web::Path<String>) -> impl Responder{
+    HttpResponse::Ok().body("Here's a buisiness endpoint.")
+}
+
+
 
 #[get("/")]
 async fn index(data: web::Data<AppState>) -> String {
