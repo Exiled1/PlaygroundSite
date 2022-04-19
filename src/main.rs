@@ -44,7 +44,7 @@ fn create_server() -> std::io::Result<Server> {
             .service(get_businesses)
             .service(delete_business)
             .service(find_business)
-            .service(web::scope("/app")
+            .service(web::scope("/review")
                 .service(add_review)
                 .service(delete_review)
                 .service(update_review))

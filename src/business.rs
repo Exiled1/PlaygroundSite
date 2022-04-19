@@ -1,11 +1,11 @@
-use std::sync::Arc;
-
+#![allow(unused)]
 use actix_web::{body::BoxBody, http::header::ContentType, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
+use validator_derive::Validate;
 // use std::sync::Arc;
 
-#[derive(Deserialize, Serialize, Clone)]
+#[derive(Deserialize, Serialize, Clone, Validate)]
 pub struct Business {
     pub name: String,
     pub street_addr: String,
@@ -24,7 +24,7 @@ pub struct Category {
     pub subcategory: String,
 }
 
-#[derive(Deserialize, Serialize, Clone)]
+#[derive(Deserialize, Serialize, Clone, Validate)]
 pub struct Review {
     pub rating: usize,
     pub dollar_signs: usize,
