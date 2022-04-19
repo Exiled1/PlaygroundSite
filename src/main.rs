@@ -47,7 +47,9 @@ fn create_server() -> std::io::Result<Server> {
             .service(web::scope("/review")
                 .service(add_review)
                 .service(delete_review)
-                .service(update_review))
+                .service(update_review)
+                .service(show_business_reviews)
+                .service(business_user_reviews))
             .service(web::scope("/photos")
                 .service(add_photo)
                 .service(delete_photo)
@@ -230,8 +232,28 @@ async fn update_review(
     }
 }
 
+#[get("/{business_name}")]
+async fn show_business_reviews(
+    params: web::Path<String>,
+    resources: web::Data<AppState>,
+) -> std::io::Result<impl Responder> {
+    let business_name = params.into_inner();
+    let database = resources.mock_database.clone();
+    let database_read = database.read().await;
+    let business_data = database_read.get(&business_name);
+    // Check to see if the business exists, if not then return an error.
+    if let Some(business) = business_data {
+        // If the business exists, then retrieve the review list (if it exists).
+        // If it does then add the sent review into the list, if it doesn't, then create the list.
+        // I could probably make it so that the review list always exists, either way works.
+        return Ok(business.get_business_reviews());
+    }else {
+        return Ok(HttpResponse::Ok().body(format!("Showing reviews from {business_name}")));
+    }
+}
+
 #[get("/{reviewer_name}/{business_name}")]
-async fn show_paginated_reviews(
+async fn business_user_reviews(
     params: web::Path<(String, String)>,
     resources: web::Data<AppState>,
 ) -> std::io::Result<impl Responder> {
@@ -244,7 +266,7 @@ async fn show_paginated_reviews(
         // If the business exists, then retrieve the review list (if it exists).
         // If it does then add the sent review into the list, if it doesn't, then create the list.
         // I could probably make it so that the review list always exists, either way works.
-        return Ok(business.show_business_reviews(reviewer_name.clone()));
+        return Ok(business.get_business_reviews());
     }else {
         return Ok(HttpResponse::Ok().body(format!("Showing {reviewer_name}'s reviews from {business_name}")));
     }

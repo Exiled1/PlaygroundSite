@@ -5,7 +5,7 @@ use serde_json::json;
 use validator_derive::Validate;
 // use std::sync::Arc;
 
-#[derive(Deserialize, Serialize, Clone, Validate)]
+#[derive(Deserialize, Serialize, Clone)]
 pub struct Business {
     pub name: String,
     pub street_addr: String,
@@ -26,7 +26,9 @@ pub struct Category {
 
 #[derive(Deserialize, Serialize, Clone, Validate)]
 pub struct Review {
+    #[validate(range(min = 0, max = 5))]
     pub rating: usize,
+    #[validate(range(min = 1, max = 4))]
     pub dollar_signs: usize,
     pub review: Option<String>,
 }
@@ -113,7 +115,8 @@ impl BusinessResponse {
             reviews.add_review(user.clone(), review.clone());
             HttpResponse::Ok().json(json!({
                 "message": "Review added.",
-                "added_review": user,
+                "added_review": review,
+                "user": user,
             }))
         } else {
             HttpResponse::Ok().json(json!({
@@ -157,7 +160,7 @@ impl BusinessResponse {
             user_reviews
                 .sort_by(|(_, review_1), (_, review_2)| review_1.rating.cmp(&review_2.rating));
             // let index_at = page * per_page;
-
+            println!("Review posted");
             HttpResponse::Ok().json(user_reviews)
         } else {
             HttpResponse::Ok().json(json!({
