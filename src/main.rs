@@ -1,7 +1,5 @@
 #![allow(non_snake_case)]
 mod business;
-// mod reviews;
-mod endpoints;
 use std::collections::HashMap;
 use std::sync::Arc;
 
@@ -274,7 +272,7 @@ async fn add_photo(
     }
 }
 
-#[delete("/photos/{user_name}/{business_name}/{photo_id}")]
+#[delete("/s{user_name}/{business_name}/{photo_id}")]
 async fn delete_photo(
     params: web::Path<(String, String, usize)>,
     resources: web::Data<AppState>,
@@ -294,7 +292,7 @@ async fn delete_photo(
     }
 }
 
-#[put("/photos/{user_name}/{business_name}")]
+#[put("/{user_name}/{business_name}")]
 async fn update_photo(
     params: web::Path<(String, String)>,
     photo_data: web::Json<Photo>,
